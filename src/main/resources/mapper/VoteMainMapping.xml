@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cnstock.votemgt.dao.VoteMainDao">
+
+
+    <insert id="addVoteConfig" parameterType="VoteMainDto">
+        insert into vote_main (title,
+                               vote_id,
+                               type,
+                               weixin_share_logo,
+                               weixin_share_description,
+                               weixin_share_title,
+                               need_count,
+                               is_valid,
+                               end_time,
+                               start_time,
+                               update_by,
+                               create_by,
+                               update_time,
+                               create_time)
+        value (#{title},
+               #{voteId},
+               #{type},
+               #{weixinShareLogo},
+               #{weixinShareDescription},
+               #{weixinShareTitle},
+               #{needCount},
+               #{isValid},
+               #{endTime},
+               #{startTime},
+               #{updateBy},
+               #{createBy},
+               now(),
+               now());
+    </insert>
+
+
+    <select id="getVoteList" parameterType="map" resultType="VoteMainDto">
+        SELECT * FROM vote_main where is_valid = 1 limit #{fromIndex},#{pageSize};
+    </select>
+
+    <select id="getVoteListCount" parameterType="map" resultType="int">
+        SELECT count(*) FROM vote_main where is_valid = 1;
+    </select>
+
+    <select id="getVoteByVoteId" parameterType="String" resultType="VoteMainDto">
+        SELECT * FROM vote_main where vote_id = #{voteId} and  is_valid = 1;
+    </select>
+
+
+</mapper>

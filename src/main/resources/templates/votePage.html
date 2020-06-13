@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- jquery vendor -->
+    <script src="../js/jquery.min.js"></script>
+    <script src="../js/bootstrap.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery-sortable/0.9.13/jquery-sortable-min.js"></script>
+    <script src="../js/Sortable.js"></script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #vote_start_time,
+        #vote_end_time {
+            display: inline;
+            padding: .375rem .75rem;
+            font-size: 1rem;
+            line-height: 1.5;
+            color: #495057;
+            background-color: #fff;
+            background-clip: padding-box;
+            border: 1px solid #ced4da;
+            border-radius: .25rem;
+            transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+        }
+
+        .control-label {
+            color: darkcyan;
+            font-weight: bold;
+        }
+
+        .form-group {
+            margin-bottom: 2rem;
+        }
+
+        .ibox-title {
+            color: rgb(0, 140, 255);
+            padding: 1%;
+        }
+
+        .vote_options_group input {
+            display: inline;
+            padding: .375rem .75rem;
+            font-size: 1rem;
+            line-height: 1.5;
+            color: #495057;
+            background-color: #fff;
+            background-clip: padding-box;
+            border: 1px solid #ced4da;
+            border-radius: .25rem;
+            transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+        }
+
+        .vote_options_group {
+            margin-bottom: 0.5rem;
+        }
+
+        .serial_number {
+            font-size: large;
+            font-weight: bold;
+            margin-right: 0.5rem;
+        }
+
+        .vote_options_group button {
+            margin-top: -0.2rem;
+            margin-left: 1rem;
+        }
+
+        .question_li button {
+            margin-left: 8px;
+        }
+    </style>
+
+    <script src="../js/voteconfig.js">
+
+    </script>
+</head>
+
+<body>
+<div class="col-sm-12">
+    <div class="ibox float-e-margins">
+        <div class="ibox-title">
+            <h3>添加投票</h3>
+        </div>
+        <div class="ibox-content">
+            <div class="form-group">
+                <label class="col-sm-2 control-label">输入投票标题</label>
+
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" id="vote_title">
+                    <input type="hidden" th:value="${voteId}" id="vote_id">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">投票起止时间</label>
+
+                <div class="col-sm-6">
+                    <input type="date" id="vote_start_time">
+                    <span>——</span>
+                    <input type="date" id="vote_end_time">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">用户提交后是否显示统计页面</label>
+                <div class="col-sm-3">
+                    <input type="radio" checked="" value="1" id="optionsRadios1" name="isNeedCount"> 显示
+                    &nbsp;&nbsp;
+                    <input type="radio" value="2" id="optionsRadios2" name="isNeedCount"> 不显示
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">选择模板</label>
+
+                <div class="col-sm-6">
+                    <select class="form-control m-b" name="pageTemplate">
+                        <option value="1">模板 1</option>
+                        <option value="2">模板 2</option>
+                        <option value="3">模板 3</option>
+                        <option value="4">模板 4</option>
+                    </select>
+                </div>
+            </div>
+
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">模板类型</label>
+
+                <div class="col-sm-10">
+                    <label class="checkbox-inline">
+                        <input type="checkbox" id="inlineCheckbox1" name="templateType"> PC端</label>&nbsp;&nbsp;
+                    <label class="checkbox-inline">
+                        <input type="checkbox" id="inlineCheckbox2" name="templateType"> 移动端</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <button class="btn btn-success " type="button" id="csvUpload">上传
+            </button>
+            <input class="upload_option_csv" name="file" accept=".csv" type="file"/>
+        </div>
+        <div class="form-group">
+            <ul id="vote_question_ul">
+
+            </ul>
+        </div>
+        <div class="form-group">
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal"
+                    id="add_vote_question">添加投票问题
+            </button>
+        </div>
+
+        <button class="btn btn-primary " type="button" id="submit_vote">提交</span>
+
+
+    </div>
+</div>
+
+</div>
+
+<!-- 投票问题配置模态窗口 -->
+<div class="modal inmodal" id="myModal" tabindex="-1" role="dialog" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content animated bounceInRight" question_id="">
+            <div class="modal-header">
+                </button>
+                <i class="fa fa-laptop modal-icon"></i>
+                <h4 class="modal-title">添加投票问题</h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span
+                        class="sr-only">关闭</span>
+            </div>
+            <div class="modal-body">
+                <form method="post" enctype="multipart/form-data" id="question_submit">
+                <div class="form-group">
+                    <label>投票问题</label>
+                    <input type="text" placeholder="请输入投票问题" id="vote_question" name="vote_question" class="form-control" question_id="">
+                </div>
+                <div class="form-group">
+                    <label>选择投票问题类型</label>
+                    <select class="form-control m-b" id="question_type">
+                        <option value="1">单选</option>
+                        <option value="2">多选</option>
+                        <option value="3">输入</option>
+                    </select>
+                </div>
+
+                <!-- 问题选项 -->
+                <div class="form-group" id="vote_question_options">
+                    <label>输入投票问题选项</label>
+                    <ul id="vote_option_ul">
+                        <li class="vote_options_group" id="vote_options_1" index="1">
+                            <input type="text" placeholder="请输入投票问题选项内容" class="vote_options_content">
+                            <button class="btn btn-success optionPic" type="button">上传图片</button>
+                            <input class="upload_option_img" name="file" accept="image/*" type="file" style="display: none"/>
+                            <button class="btn btn-danger del_option" type="button">删除</button>
+                        </li>
+
+                    </ul>
+                </div>
+                <button class="btn btn-w-m btn-danger" type="button" id="addOption">添加</button>
+                </span>
+                </form>
+            </div>
+
+            <!-- 保存和退出 -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-white" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" id="saveQuestion" data-dismiss="modal">保存</button>
+            </div>
+            </small>
+        </div>
+        <small class="font-bold">
+        </small>
+    </div>
+    <small class="font-bold">
+    </small>
+</div>
+</body>
+
+</html>

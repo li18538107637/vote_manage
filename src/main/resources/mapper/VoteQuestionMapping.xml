@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cnstock.votemgt.dao.VoteQuestionDao">
+
+
+<insert id="addQuestionConfig" parameterType="List">
+    insert into vote_question(question_title,vote_id,question_type,question_id,frequency_limit,update_by,create_by,update_time,create_time)
+    values
+    <foreach collection="list" item="item" index="index" separator=",">
+        (
+        #{item.questionTitle},
+        #{item.voteId},
+        #{item.questionType},
+        #{item.questionId},
+        #{item.frequencyLimit},
+        #{item.updateBy},
+        #{item.createBy},
+        now(),
+        now()
+        )
+    </foreach>
+</insert>
+
+    <select id="getQuestionByVoteId" parameterType="String" resultType="VoteQuestionDto">
+        select * from vote_question where vote_id = #{voteId};
+    </select>
+
+    <select id="getQuestionByQuestionId" parameterType="String" resultType="VoteQuestionDto">
+        select * from vote_question where question_id = #{questionId};
+    </select>
+
+
+</mapper>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cnstock.votemgt.dao.VoteOptionDao">
+
+
+<insert id="addOptionConfig" parameterType="java.util.List">
+    insert into vote_options(options_title,question_id,img_url,select_count,option_id,update_by,create_by,update_time,create_time)
+    values
+    <foreach collection="list" item="item" index="index" separator=",">
+        (
+        #{item.optionTitle},
+        #{item.questionId},
+        #{item.imgUrl},
+        #{item.selectCount},
+        #{item.optionId},
+        #{item.updateBy},
+        #{item.createBy},
+        now(),
+        now()
+        )
+    </foreach>
+</insert>
+
+
+</mapper>
