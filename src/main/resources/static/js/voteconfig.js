@@ -266,7 +266,7 @@ $(function () {
 function getVoteContent(){
     var voteId = $("#vote_id").val();
 
-    if (voteId != "undefined" || voteId != "") {
+    if (voteId != "undefined" && voteId != "") {
         var params = {
             "voteId":voteId
         }

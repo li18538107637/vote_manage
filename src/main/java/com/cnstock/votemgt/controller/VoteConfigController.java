@@ -172,6 +172,7 @@ public class VoteConfigController {
             resultMap.put("returnCode", "1");
             resultMap.put("returnMsg", "保存投票配置失败");
             log.error("保存投票配置失败");
+            e.printStackTrace();
         }
         return new Gson().toJson(resultMap);
     }

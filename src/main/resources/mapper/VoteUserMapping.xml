@@ -7,12 +7,23 @@
         <result property="username" column="username"/>
         <result property="password" column="password"/>
         <result property="roleName" column="roleName"/>
+        <result property="createTime" column="createTime"/>
+        <result property="userId" column="userId"/>
     </resultMap>
 
     <select id="getVoteUserByUserId" parameterType="String" resultMap="userResultMap">
         SELECT u.user_name username , u.pass_word password,ur.role_id roleId,r.name roleName FROM `vote_user` u
          inner join vote_user_role ur on  u.user_id = ur.user_id
          inner join vote_role r on ur.role_id = r.id  where u.user_name = #{userName};
+    </select>
+
+    <select id="getVoteUseList" parameterType="map" resultMap="userResultMap">
+        select vu.user_name username,vu.user_id userId,date_format(vu.create_time, '%Y-%m-%d') createTime,vr.name roleName from vote_user vu inner join vote_user_role ur on ur.user_id = vu.user_id inner join vote_role vr on vr.id = ur.role_id
+        limit #{fromIndex} , #{pageSize};
+    </select>
+
+    <select id="getVoteUseListCount" parameterType="map" resultType="Integer">
+        SELECT count(*) from vote_user limit #{fromIndex} , #{pageSize};
     </select>
 
 

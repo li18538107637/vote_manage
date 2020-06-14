@@ -1,11 +1,20 @@
 package com.cnstock.votemgt.controller;
 
+import com.cnstock.votemgt.constant.Constants;
+import com.cnstock.votemgt.service.VoteUserService;
+import com.google.gson.Gson;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.xml.ws.Action;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -13,6 +22,11 @@ import java.util.List;
 
 @Controller
 public class VoteUserController {
+
+    Log log = LogFactory.getLog(VoteUserController.class);
+
+    @Autowired
+    public VoteUserService voteUserService;
 
     @RequestMapping("/")
     public String index(){
@@ -62,5 +76,31 @@ public class VoteUserController {
 //            }
 //        }
         return viewName;
+    }
+
+
+    @RequestMapping("/getUserList")
+    @ResponseBody
+    public String getUserList(Integer pageSize, Integer pageNum){
+        HashMap<String, Object> resultMap = new HashMap();
+        try {
+            if (StringUtils.isEmpty(pageSize)) {
+                pageSize = Constants.DEFALUT_PAGE_SIZE;
+            }
+
+            if (StringUtils.isEmpty(pageNum)) {
+                pageNum = Constants.DEFALUT_PAGE_NUM;
+            }
+            resultMap = voteUserService.getUserList(pageSize, pageNum);
+
+
+            resultMap.put("returnCode", "0");
+            resultMap.put("returnMsg", "success");
+        } catch (Exception e) {
+            log.error("query black list have a exception the message is:" + e.getMessage(), e);
+            resultMap.put("returnCode", "1");
+            resultMap.put("returnMsg", "获取投票列表失败");
+        }
+        return new Gson().toJson(resultMap);
     }
 }
